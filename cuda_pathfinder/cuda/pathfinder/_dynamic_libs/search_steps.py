@@ -29,6 +29,7 @@ from cuda.pathfinder._dynamic_libs.lib_descriptor import LibDescriptor
 from cuda.pathfinder._dynamic_libs.load_dl_common import DynamicLibNotFoundError
 from cuda.pathfinder._dynamic_libs.search_platform import PLATFORM, SearchPlatform
 from cuda.pathfinder._utils.env_vars import get_cuda_path_or_home
+from cuda.pathfinder._utils.troubleshooting import append_troubleshooting_url
 
 # ---------------------------------------------------------------------------
 # Data types
@@ -63,7 +64,9 @@ class SearchContext:
     def raise_not_found(self) -> NoReturn:
         err = ", ".join(self.error_messages)
         att = "\n".join(self.attachments)
-        raise DynamicLibNotFoundError(f'Failure finding "{self.lib_searched_for}": {err}\n{att}')
+        raise DynamicLibNotFoundError(
+            append_troubleshooting_url(f'Failure finding "{self.lib_searched_for}": {err}\n{att}')
+        )
 
 
 #: Type alias for a find step callable.

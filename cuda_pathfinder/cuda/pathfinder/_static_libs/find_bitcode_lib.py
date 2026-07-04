@@ -9,6 +9,7 @@ from typing import NoReturn, TypedDict
 from cuda.pathfinder._utils.env_vars import get_cuda_path_or_home
 from cuda.pathfinder._utils.find_sub_dirs import find_sub_dirs_all_sitepackages
 from cuda.pathfinder._utils.platform_aware import IS_WINDOWS
+from cuda.pathfinder._utils.troubleshooting import append_troubleshooting_url
 
 
 class BitcodeLibNotFoundError(RuntimeError):
@@ -127,7 +128,7 @@ class _FindBitcodeLib:
     def raise_not_found_error(self) -> NoReturn:
         err = ", ".join(self.error_messages) if self.error_messages else "No search paths available"
         att = "\n".join(self.attachments) if self.attachments else ""
-        raise BitcodeLibNotFoundError(f'Failure finding "{self.filename}": {err}\n{att}')
+        raise BitcodeLibNotFoundError(append_troubleshooting_url(f'Failure finding "{self.filename}": {err}\n{att}'))
 
 
 def locate_bitcode_lib(name: str) -> LocatedBitcodeLib:

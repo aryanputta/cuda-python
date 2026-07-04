@@ -14,6 +14,7 @@ from cuda.pathfinder._static_libs.find_bitcode_lib import (
     locate_bitcode_lib,
 )
 from cuda.pathfinder._utils.env_vars import get_cuda_path_or_home
+from cuda.pathfinder._utils.troubleshooting import TROUBLESHOOTING_URL
 
 STRICTNESS = os.environ.get("CUDA_PATHFINDER_TEST_FIND_NVIDIA_BITCODE_LIB_STRICTNESS", "see_what_works")
 assert STRICTNESS in ("see_what_works", "all_must_work")
@@ -160,6 +161,7 @@ def test_find_bitcode_lib_not_found_error_includes_cuda_home_directory_listing(m
     assert f"No such file: {expected_missing_file}" in message
     assert f'listdir("{lib_dir}"):' in message
     assert "README.txt" in message
+    assert message.endswith(f"\n\nPlease see {TROUBLESHOOTING_URL}")
 
 
 @pytest.mark.usefixtures("clear_find_bitcode_lib_cache")

@@ -10,6 +10,7 @@
 
    install
    api
+   troubleshooting
    contribute
    license
 

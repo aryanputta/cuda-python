@@ -23,6 +23,7 @@ from cuda.pathfinder._dynamic_libs.search_steps import (
     find_in_site_packages,
     run_find_steps,
 )
+from cuda.pathfinder._utils.troubleshooting import TROUBLESHOOTING_URL
 
 _STEPS_MOD = "cuda.pathfinder._dynamic_libs.search_steps"
 _PLAT_MOD = "cuda.pathfinder._dynamic_libs.search_platform"
@@ -81,6 +82,13 @@ class TestSearchContext:
         ctx = _ctx()
         with pytest.raises(DynamicLibNotFoundError):
             ctx.raise_not_found()
+
+    def test_raise_not_found_includes_troubleshooting_url(self):
+        ctx = _ctx()
+        ctx.error_messages.append("No such file: libcudart.so*")
+        with pytest.raises(DynamicLibNotFoundError) as exc_info:
+            ctx.raise_not_found()
+        assert str(exc_info.value).endswith(f"\n\nPlease see {TROUBLESHOOTING_URL}")
 
 
 # ---------------------------------------------------------------------------

@@ -13,3 +13,7 @@ Highlights
   ``cupti64_2026.2.1.dll`` so ``load_nvidia_dynamic_lib("cupti")`` can
   recognize the installed library on CTK 13.3.1 systems.
   (`PR #2276 <https://github.com/NVIDIA/cuda-python/pull/2276>`_)
+
+* Add a :doc:`troubleshooting <../troubleshooting>` documentation page and
+  point library-not-found error messages at it.
+  (`Issue #851 <https://github.com/NVIDIA/cuda-python/issues/851>`_)

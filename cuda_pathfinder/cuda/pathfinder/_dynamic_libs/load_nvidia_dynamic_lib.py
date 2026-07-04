@@ -35,6 +35,7 @@ from cuda.pathfinder._dynamic_libs.subprocess_protocol import (
     parse_dynamic_lib_subprocess_payload,
 )
 from cuda.pathfinder._utils.platform_aware import IS_WINDOWS
+from cuda.pathfinder._utils.troubleshooting import append_troubleshooting_url
 
 if TYPE_CHECKING:
     from cuda.pathfinder._dynamic_libs.lib_descriptor import LibDescriptor
@@ -69,8 +70,10 @@ def _load_driver_lib_no_cache(desc: LibDescriptor) -> LoadedDL:
     if loaded is not None:
         return loaded
     raise DynamicLibNotFoundError(
-        f'"{desc.name}" is an NVIDIA driver library and can only be found via'
-        f" system search. Ensure the NVIDIA display driver is installed."
+        append_troubleshooting_url(
+            f'"{desc.name}" is an NVIDIA driver library and can only be found via'
+            f" system search. Ensure the NVIDIA display driver is installed."
+        )
     )
 
 
