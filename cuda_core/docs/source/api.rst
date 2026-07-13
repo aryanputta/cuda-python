@@ -19,6 +19,7 @@ Devices and execution
    :toctree: generated/
 
    Device
+   DemoUndocumentedRegression
    Host
    launch
 
