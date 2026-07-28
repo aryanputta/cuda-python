@@ -447,7 +447,7 @@ class VirtualMemoryResource(MemoryResource):
         raise_if_driver_error(res2)
 
         # Invalidate the old buffer so its destructor won't try to free again
-        buf._clear()
+        buf._clear_without_deallocate()
 
         # Return a new Buffer for the new mapping
         return Buffer.from_handle(ptr=new_ptr, size=new_size, mr=self)

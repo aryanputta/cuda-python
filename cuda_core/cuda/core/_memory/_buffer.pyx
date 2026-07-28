@@ -22,6 +22,7 @@ from cuda.core._resource_handles cimport (
     as_intptr,
     as_cu,
     set_deallocation_stream,
+    suppress_mr_deallocation,
 )
 from cuda.core.typing import DevicePointerType
 
@@ -167,6 +168,16 @@ cdef class Buffer:
         self._ipc_data = None
         self._owner = None
         self._mem_attrs_inited.store(False)
+
+    def _clear_without_deallocate(self) -> None:
+        """Clear the buffer without calling ``deallocate()`` on its memory resource.
+
+        For callers that have already released the memory by another route, so
+        ``deallocate()`` would run against a pointer that is no longer theirs.
+        """
+        assert self._memory_resource is not None
+        suppress_mr_deallocation(self._h_ptr)
+        self._clear()
 
     def __init__(self, *args, **kwargs) -> None:
         raise RuntimeError("Buffer objects cannot be instantiated directly. "

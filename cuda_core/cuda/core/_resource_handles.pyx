@@ -130,6 +130,8 @@ cdef extern from "_cpp/resource_handles.hpp" namespace "cuda_core":
         const DevicePtrHandle& h) noexcept nogil
     void set_deallocation_stream "cuda_core::set_deallocation_stream" (
         const DevicePtrHandle& h, const StreamHandle& h_stream) noexcept nogil
+    void suppress_mr_deallocation "cuda_core::suppress_mr_deallocation" (
+        const DevicePtrHandle& h) noexcept nogil
 
     # Library handles
     LibraryHandle create_library_handle_from_file "cuda_core::create_library_handle_from_file" (

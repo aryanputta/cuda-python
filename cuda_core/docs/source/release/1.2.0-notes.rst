@@ -18,6 +18,13 @@ Fixes and enhancements
   (`#2357 <https://github.com/NVIDIA/cuda-python/pull/2357>`__,
   `#2371 <https://github.com/NVIDIA/cuda-python/pull/2371>`__)
 
+- Growing a :class:`VirtualMemoryResource` allocation along the remapping path
+  no longer prints ``mr.deallocate() failed during Buffer destruction`` when the
+  superseded buffer is collected. Previously the old buffer kept an owning
+  handle to a virtual address range the grow had already freed, so its
+  destructor called ``deallocate()`` on it a second time.
+  (`#2388 <https://github.com/NVIDIA/cuda-python/issues/2388>`__)
+
 Deprecation Notices
 -------------------
 

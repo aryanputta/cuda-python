@@ -483,6 +483,29 @@ def test_mr_deallocate_called_on_close():
     assert len(mr.active) == 0
 
 
+@pytest.mark.agent_authored(model="claude-opus-5")
+def test_clear_without_deallocate_skips_mr():
+    """_clear_without_deallocate() drops the buffer without calling mr.deallocate()."""
+    import gc
+
+    device = Device()
+    device.set_current()
+    mr = TrackingMR()
+    buf = mr.allocate(1024)
+    (ptr,) = mr.active
+
+    buf._clear_without_deallocate()
+    assert buf.handle == 0
+
+    del buf
+    gc.collect()
+    # Still tracked: the memory resource was never asked to free it.
+    assert list(mr.active) == [ptr]
+
+    # The test owns the allocation now.
+    mr.deallocate(ptr, 1024)
+
+
 def test_mr_deallocate_called_on_gc():
     """Buffer.from_handle(mr=mr) calls mr.deallocate() on GC (issue #1619)."""
     import gc

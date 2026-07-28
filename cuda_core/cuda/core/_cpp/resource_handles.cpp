@@ -906,6 +906,9 @@ struct DevicePtrBox {
     // through a const DevicePtrHandle. The stream can be changed after
     // allocation (e.g., to synchronize deallocation with a different stream).
     mutable StreamHandle h_stream;
+    // Mutable for the same reason: suppress_mr_deallocation() disarms the memory
+    // resource callback through a const DevicePtrHandle.
+    mutable bool disowned = false;
 };
 }  // namespace
 
@@ -927,6 +930,12 @@ StreamHandle deallocation_stream(const DevicePtrHandle& h) noexcept {
 
 void set_deallocation_stream(const DevicePtrHandle& h, const StreamHandle& h_stream) noexcept {
     get_box(h)->h_stream = h_stream;
+}
+
+void suppress_mr_deallocation(const DevicePtrHandle& h) noexcept {
+    if (h) {
+        get_box(h)->disowned = true;
+    }
 }
 
 DevicePtrHandle deviceptr_alloc_from_pool(size_t size, const MemoryPoolHandle& h_pool, const StreamHandle& h_stream) {
@@ -1072,7 +1081,7 @@ DevicePtrHandle deviceptr_create_with_mr(CUdeviceptr ptr, size_t size, PyObject*
         [mr, size](DevicePtrBox* b) {
             GILAcquireGuard gil;
             if (gil.acquired()) {
-                if (mr_dealloc_cb) {
+                if (mr_dealloc_cb && !b->disowned) {
                     mr_dealloc_cb(mr, b->resource, size, b->h_stream);
                 }
                 Py_DECREF(mr);

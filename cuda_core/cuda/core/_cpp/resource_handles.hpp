@@ -423,6 +423,12 @@ StreamHandle deallocation_stream(const DevicePtrHandle& h) noexcept;
 // Set the deallocation stream for a device pointer handle.
 void set_deallocation_stream(const DevicePtrHandle& h, const StreamHandle& h_stream) noexcept;
 
+// Give up ownership of the memory behind a device pointer handle.
+// The memory resource callback registered by deviceptr_create_with_mr will not
+// run when the last reference is released. Use when the memory has already been
+// released through another path and the handle must not free it again.
+void suppress_mr_deallocation(const DevicePtrHandle& h) noexcept;
+
 // ============================================================================
 // Library handle functions
 // ============================================================================

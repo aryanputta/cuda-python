@@ -35,6 +35,13 @@ class Buffer:
     def _clear(self) -> None:
         ...
 
+    def _clear_without_deallocate(self) -> None:
+        """Clear the buffer without calling ``deallocate()`` on its memory resource.
+
+        For callers that have already released the memory by another route, so
+        ``deallocate()`` would run against a pointer that is no longer theirs.
+        """
+
     def __init__(self, *args, **kwargs) -> None:
         ...
 
