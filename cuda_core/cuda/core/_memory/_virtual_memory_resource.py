@@ -180,13 +180,13 @@ class VirtualMemoryResource(MemoryResource):
         if self.device and not self.device.properties.virtual_memory_management_supported:
             raise RuntimeError("VirtualMemoryResource requires CUDA VMM API support")
 
-        # Validate RDMA support if requested
+        # Validate VMM-specific RDMA support if requested.
         if (
             self.config.gpu_direct_rdma
             and self.device is not None
-            and not self.device.properties.gpu_direct_rdma_supported
+            and not self.device.properties.gpu_direct_rdma_with_cuda_vmm_supported
         ):
-            raise RuntimeError("GPU Direct RDMA is not supported on this device")
+            raise RuntimeError("GPU Direct RDMA with CUDA VMM is not supported on this device")
 
     @staticmethod
     def _align_up(size: int, gran: int) -> int:

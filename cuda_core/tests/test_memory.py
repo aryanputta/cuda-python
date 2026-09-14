@@ -839,9 +839,9 @@ def test_vmm_allocator_policy_configuration():
     if not device.properties.virtual_memory_management_supported:
         pytest.skip("Virtual memory management is not supported on this device")
 
-    # Skip if GPU Direct RDMA is not supported
-    if not device.properties.gpu_direct_rdma_supported:
-        pytest.skip("This test requires a device that supports GPU Direct RDMA")
+    # Skip if GPU Direct RDMA with CUDA VMM is not supported
+    if not device.properties.gpu_direct_rdma_with_cuda_vmm_supported:
+        pytest.skip("This test requires a device that supports GPU Direct RDMA with CUDA VMM")
 
     # Test with custom VMM config
     custom_config = VirtualMemoryResourceOptions(
@@ -1039,7 +1039,7 @@ def test_vmm_allocator_rdma_unsupported_exception():
     """Test that VirtualMemoryResource throws an exception when RDMA is requested but device doesn't support it.
 
     This test verifies that the VirtualMemoryResource constructor throws a RuntimeError
-    when gpu_direct_rdma=True is requested but the device doesn't support virtual memory management.
+    when gpu_direct_rdma=True is requested but the device doesn't support GPU Direct RDMA with CUDA VMM.
     """
     device = Device()
     device.set_current()
@@ -1048,13 +1048,13 @@ def test_vmm_allocator_rdma_unsupported_exception():
     if not device.properties.virtual_memory_management_supported:
         pytest.skip("Virtual memory management is not supported on this device")
 
-    # Skip if GPU Direct RDMA is supported (we want to test the unsupported case)
-    if device.properties.gpu_direct_rdma_supported:
-        pytest.skip("This test requires a device that doesn't support GPU Direct RDMA")
+    # Skip if GPU Direct RDMA with CUDA VMM is supported (we want to test the unsupported case)
+    if device.properties.gpu_direct_rdma_with_cuda_vmm_supported:
+        pytest.skip("This test requires a device that doesn't support GPU Direct RDMA with CUDA VMM")
 
     # Test that requesting RDMA on an unsupported device throws an exception
     options = VirtualMemoryResourceOptions(gpu_direct_rdma=True)
-    with pytest.raises(RuntimeError, match="GPU Direct RDMA is not supported on this device"):
+    with pytest.raises(RuntimeError, match="GPU Direct RDMA with CUDA VMM is not supported on this device"):
         VirtualMemoryResource(device, config=options)
 
 
